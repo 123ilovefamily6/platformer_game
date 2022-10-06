@@ -39,6 +39,7 @@ class Player:
                 self.velx = 1
             self.velx += 0.1
             r += 1
+
             print(r)
             if self.x % 2 < 1:
                 win.blit(self.image2,(self.x, self.y))
