@@ -8,7 +8,6 @@ blue = (0, 0, 255)
 cyan = (0, 255, 255)
 yellow = (255, 255, 0)
 green = (0, 228, 0)
-bg_color = cyan
 white = (255, 255, 255)
 black = (0, 0, 0)
 r = 0
@@ -23,14 +22,12 @@ class Player:
         self.vely = 0
         self.gravity = 1
         self.jumping = False
-        if r == 0:
-            self.image = pygame.transform.scale(pygame.image.load("art/guy.png"), (self.height, self.width))
-        if r >= 1:
-            self.image = pygame.transform.scale(pygame.image.load("art/pixil-frame-1.png"), (self.height, self.width))
         self.jumppower = 25
         self.rect = pygame.Rect(self.x,self.y, self.width, self.height)
         self.xp = 0
         self.coins = 0
+        self.image = pygame.transform.scale(pygame.image.load("Art/pixil-frame-1.png"), (self.height, self.width))
+        self.image2 = pygame.transform.scale(pygame.image.load("Art/guy.png"), (self.height, self.width))
     def tick(self):
         global r
         if keys[pygame.K_LEFT]:
@@ -43,11 +40,14 @@ class Player:
             self.velx += 0.1
             r += 1
             print(r)
+            if self.x % 2 < 1:
+                win.blit(self.image2,(self.x, self.y))
+            else:
+                win.blit(self.image,(self.x, self.y))
         self.x += self.velx
         if keys[pygame.K_UP] and self.jumping == False and self.y >= windowheight - self.height:
             self.vely = -self.jumppower
             self.jumping = True
-
         for platform in platformlist:
             if self.rect.colliderect(platform.rect) == True:
                 if keys[pygame.K_UP] and self.jumping == False:
@@ -74,7 +74,6 @@ class Player:
             self.jumping = False
         if self.y < 0:
             self.y = 0
-
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         win.blit(self.image,(self.x,self.y))
 class pickup:
@@ -88,7 +87,7 @@ class pickup:
     def tick(self):
         if self.rect.colliderect(player.rect) == True:
             player.coins += 1
-            print("Pumkin "+str(player.coins-1))
+            print("Pumpkin "+str(player.coins-1))
             overlaping = True
             while overlaping == True:
                 self.x = random.randint(0, windowwidth - coin.width)
@@ -109,7 +108,6 @@ class platform:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         pygame.draw.rect(win, green, self.rect)
 
-win.fill(bg_color)
 player = Player()
 coin = pickup()
 platform1 = platform(300, 475, 350, 50)
@@ -119,6 +117,10 @@ platformlist = [platform1, platform2, platform3]
 pygame.display.set_caption("Python Platformer")
 run = True
 while run:
+    bg_color = cyan
+    if r == 1:
+        r = 0
+        print(r)
     pygame.time.delay(25)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
